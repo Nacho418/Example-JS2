@@ -5,6 +5,22 @@ let precio4 = 5128
 let precio5 = 3592
 let precio6 = 928
 
+let day = new Date()
+let hoy = [day.getDate(), day.getMonth(), day.getFullYear()]
+let hoyStr = day.toDateString()
+document.querySelector(".fecha").textContent = hoyStr
+let numVenta = 0
+let pagoTot = 0
+let pesoTot = 0
+let ventas = []
+
+let cant1 = document.querySelector("#cantKgHF")
+let cant2 = document.querySelector("#cantKgHG")
+let cant3 = document.querySelector("#cantKgHGal")
+let cant4 = document.querySelector("#cantKgAI")
+let cant5 = document.querySelector("#cantKgAl")
+let cant6 = document.querySelector("#cantKgHA")
+
 document.querySelector("#span1").textContent = precio1
 document.querySelector("#span2").textContent = precio2
 document.querySelector("#span3").textContent = precio3
@@ -12,126 +28,60 @@ document.querySelector("#span4").textContent = precio4
 document.querySelector("#span5").textContent = precio5
 document.querySelector("#span6").textContent = precio6
 
-function comprar() {
-    sumaTot = 0
-    precioTotal = 0
-    productos = 0
-    peso = 0
-    vendido = new Venta()
-    vendido.fecha = day
-    newItem()
-    console.log("Venta N° " + vendido.numVenta)
-    console.log(vendido)
-    calcAcum(cantVentas)
-    console.log("Total en ventas acumuladas = $" + acum)
-    verST(newH3)
-}
-function newItem() {
-    let type = parseInt(prompt("Elija tipo de chapa"))
-    switch (type) {
-        case 1:
-            valorKg = 800
-            alert("Usted seleccionó Chapa de Hierro - $800 x kg")
-            itemPrice(valorKg)
-            break;
-        case 2:
-            valorKg = 1000
-            alert("Usted seleccionó Chapa Galvanizada - $1.000 x kg")
-            itemPrice(valorKg)
-            break;
-        case 3:
-            valorKg = 4000
-            alert("Usted seleccionó Chapa de Acero Inoxidable - $4.000 x kg")
-            itemPrice(valorKg)
-            break;
-        case 4:
-            valorKg = 3000
-            alert("Usted seleccionó Chapa de Aluminio - $3.000 x kg")
-            itemPrice(valorKg)
-            break;
-        default:
-            newItem()
-            break;
-    }
-}
-function itemPrice(valorKg) {
-    let cantidadKg = 0
-    while (cantidadKg <= 0 || cantidadKg == null || isNaN(cantidadKg)) {
-        cantidadKg = parseInt(prompt("Indique cantidad de kilogramos a comprar"))
-    }
-    alert("Usted ingresó " + cantidadKg + "kg")
-    sumaPar = + cantidadKg * valorKg
-    peso += cantidadKg
-    alert("$" + sumaPar + " añadido al carrito")
-    productos++
-    continuar()
-    return sumaPar
-}
-function continuar() {
-    sumaTot += sumaPar
-    let respuesta = prompt("¿Seguir comprando? Y / N")
-    if (respuesta == "Y") {
-        newItem()
-    }
-    else if (respuesta == "N") {
-        alert("Su total es de $" + sumaTot)
-        numVenta++
-        consultar(sumaTot)
-        vendido.numVenta = numVenta
-        vendido.cantProd = productos
-        vendido.pesoTot = peso
-    }
-    else {
-        continuar()
-    }
-}
-function consultar(sumaTot) {
-    let cuotas = prompt("¿Desea realizar el pago en cuotas? Y / N")
-    let precioTotal = sumaTot
-    if (cuotas == "Y") {
-        let cantCuotas = 1
-        while (cantCuotas <= 1 || cantCuotas > 18 || cantCuotas == null || isNaN(cantCuotas))
-            cantCuotas = parseInt(prompt("Ingrese cantidad de cuotas (2 a 18 - 5% mensual)"))
-        for (let i = 2; i <= cantCuotas; i++) {
-            precioTotal *= 1.05
-        }
-        cantVentas[numVenta - 1] = Math.floor(precioTotal)
-        vendido.enCuotas = true
-        vendido.pago = Math.floor(precioTotal)
-        vendido.cantCuotas = cantCuotas
-        ventas.push(vendido)
-        finalizarVenta(vendido)
 
+function checkcant() {
+    let inputs = []
+    inputs = document.querySelectorAll(".inputKg")
+    let errores = 0
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].value < 0 || inputs[i].value == null || inputs[i].value == "") {
+            errores++
+        }
     }
-    else if (cuotas == "N") {
-        cantCuotas = 1
-        cantVentas[numVenta - 1] = Math.floor(precioTotal)
-        vendido.enCuotas = false
-        vendido.pago = Math.floor(precioTotal)
-        vendido.cantCuotas = 1
-        ventas.push(vendido)
-        finalizarVenta(vendido)
-    }
-    else {
-        consultar(sumaTot)
-    }
-}
-function finalizarVenta(venta) {
-    if (venta.cantCuotas == 1) {
-        alert("Su total a abonar es de $" + venta.pago + " en " + venta.cantCuotas + " pago.")
+    if (errores == 0) {
+        comprar()
     }
     else {
-        alert("Su total a abonar es de $" + venta.pago + " en " + venta.cantCuotas + " pagos de $" + Math.floor(venta.pago / venta.cantCuotas) + ".")
+        alert("Error en las cantidades \n Vuelva a intentar")
     }
-    alert("Gracias por su compra")
 }
-function calcAcum(cantVentas) {
-    acum = 0
-    for (let i = 0; i <= cantVentas.length - 1; i++) {
-        acum += cantVentas[i]
-    }
-    return acum
+function comprar() {
+    cant1 = document.querySelector("#cantKgHF")
+    cant2 = document.querySelector("#cantKgHG")
+    cant3 = document.querySelector("#cantKgHGal")
+    cant4 = document.querySelector("#cantKgAI")
+    cant5 = document.querySelector("#cantKgAl")
+    cant6 = document.querySelector("#cantKgHA")
+    numVenta++
+    pagoTot = (cant1.value * precio1) + (cant2.value * precio2) + (cant3.value * precio3) + (cant4.value * precio4) + (cant5.value * precio5) + (cant6.value * precio6)
+    pesoTot = parseInt(cant1.value) + parseInt(cant2.value) + parseInt(cant3.value) + parseInt(cant4.value) + parseInt(cant5.value) + parseInt(cant6.value)
+
+    newH5.innerHTML = `
+    Cantidad de items: <br><br>
+    Peso Total: ${pesoTot} kg<br><br>
+    Total a abonar: $${pagoTot}<br><br>
+    Cantidad de pagos:
+    <p>
+    <form>
+    <span class="radioSpan">1<input type="radio" name="cuotas" class="radioInput" value="1" checked></span>
+    <span class="radioSpan">3<input type="radio" name="cuotas" class="radioInput" value="3"></span>
+    <span class="radioSpan">6<input type="radio" name="cuotas" class="radioInput" value="6"></span>
+    <span class="radioSpan">9<input type="radio" name="cuotas" class="radioInput" value="9"></span>
+    <span class="radioSpan">12<input type="radio" name="cuotas" class="radioInput" value="12"></span>
+    </form>
+    <br>
+    (5% mensual acumulativo)
+    </p>
+    `
+    document.querySelector("#pie").style.display = "block"
+    cant1.setAttribute("disabled", "")
+    cant2.setAttribute("disabled", "")
+    cant3.setAttribute("disabled", "")
+    cant4.setAttribute("disabled", "")
+    cant5.setAttribute("disabled", "")
+    cant6.setAttribute("disabled", "")
 }
+
 function verVenta() {
     let numVen = parseInt(prompt("Ingrese número de venta"))
     if (ventas.some((venta) => venta.numVenta == numVen)) {
@@ -142,37 +92,86 @@ function verVenta() {
     }
 }
 class Venta {
-    constructor(numVenta, cantProd, pago, enCuotas, cantCuotas, pesoTot,fecha) {
+    constructor(numVenta, cantProd, pago, cantCuotas, pesoTot, fecha) {
         this.numVenta = numVenta;
         this.cantProd = cantProd;
         this.pago = pago;
-        this.enCuotas = enCuotas;
         this.cantCuotas = cantCuotas;
         this.pesoTot = pesoTot;
         this.fecha = fecha;
     }
 }
-let day = new Date()
-let acum = 0
-let ventas = []
-let cantVentas = []
-let productos = 0
-let sumaTot = 0
-let numVenta = 0
 let boton1 = document.querySelector(".comprar")
-boton1.addEventListener("click", comprar)
+boton1.addEventListener("click", checkcant)
 let boton2 = document.querySelector(".buscarVenta")
 boton2.addEventListener("click", verVenta)
-let hoy = [day.getDate(), day.getMonth(), day.getFullYear()]
-let hoyStr = day.toDateString()
-document.querySelector(".fecha").textContent = hoyStr
 
-let newDiv = document.createElement("div")
-document.body.appendChild(newDiv) 
-let newH3 = document.createElement("h3")
-newDiv.appendChild(newH3)
-newH3.textContent = ""
+let subtotal = document.querySelector("#subtotal")
+let newH5 = document.createElement("h5")
+subtotal.appendChild(newH5)
+newH5.textContent = ""
 
-function verST (texto){
-    texto.textContent = "Total = $" + vendido.pago
+let boton3 = document.querySelector("#confirmar")
+let boton4 = document.querySelector("#cancelar")
+boton3.addEventListener("click", confirmar)
+boton4.addEventListener("click", cancelar)
+
+function cancelar() {
+    newH5.innerHTML = ""
+    document.querySelector("#pie").style.display = "none"
+    cant1.removeAttribute("disabled", "")
+    cant2.removeAttribute("disabled", "")
+    cant3.removeAttribute("disabled", "")
+    cant4.removeAttribute("disabled", "")
+    cant5.removeAttribute("disabled", "")
+    cant6.removeAttribute("disabled", "")
 }
+function confirmar() {
+  
+    let vendido = new Venta()
+    vendido.pago = pagoTotal
+    vendido.numVenta = numVenta
+    vendido.fecha = day
+    vendido.pago = Math.floor(pagoTotal)
+    vendido.pesoTot = pesoTot
+    vendido.cantCuotas = cuotas
+    ventas.push(vendido)
+    alert("Gracias por su compra")
+    reiniciar()
+}
+function reiniciar() {
+    cant1.value = 0
+    cant2.value = 0
+    cant3.value = 0
+    cant4.value = 0
+    cant5.value = 0
+    cant6.value = 0
+    newH5.innerHTML = ""
+    document.querySelector("#pie").style.display = "none"
+    cant1.removeAttribute("disabled", "")
+    cant2.removeAttribute("disabled", "")
+    cant3.removeAttribute("disabled", "")
+    cant4.removeAttribute("disabled", "")
+    cant5.removeAttribute("disabled", "")
+    cant6.removeAttribute("disabled", "")
+}
+let radioInputs = document.querySelectorAll(".radioInput")
+for (let i = 0; i < radioInputs.length; i++) {
+    radioInputs[i].addEventListener("change",modValue) 
+}
+function modValue() { // NO ANDA EL ADDEVENTLISTENER EN EL RADIO INPUTTTTTTTTTTT
+    let pagoTotal = pagoTot
+    let elem = document.querySelectorAll(".radioInput")
+    for (i = 0; i < elem.length; i++) {
+        if (elem[i].checked)
+            cuotas = elem[i].value
+    }
+    if (cuotas != 1) {
+        for (let i = 2; i <= cuotas; i++) {
+            pagoTotal *= 1.05
+        }
+    }
+    comprar()
+}
+
+
