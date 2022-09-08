@@ -87,3 +87,11 @@ margin-bottom: 30px;
 .listaChapas{
     padding-bottom: 50px;
 }
+#espacio{
+    height: 50px;
+    border-bottom: solid 1px grey;
+    margin-bottom: 20px;
+}
+.radioSpan{
+    width: 40%;
+}

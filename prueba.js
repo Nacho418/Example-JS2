@@ -12,6 +12,14 @@ document.querySelector(".fecha").textContent = hoyStr
 let numVenta = 0
 let pagoTot = 0
 let pesoTot = 0
+let ventas = []
+
+let cant1 = document.querySelector("#cantKgHF")
+let cant2 = document.querySelector("#cantKgHG")
+let cant3 = document.querySelector("#cantKgHGal")
+let cant4 = document.querySelector("#cantKgAI")
+let cant5 = document.querySelector("#cantKgAl")
+let cant6 = document.querySelector("#cantKgHA")
 
 document.querySelector("#span1").textContent = precio1
 document.querySelector("#span2").textContent = precio2
@@ -38,28 +46,40 @@ function checkcant() {
     }
 }
 function comprar() {
-    let cant1 = document.querySelector("#cantKgHF")
-    let cant2 = document.querySelector("#cantKgHG")
-    let cant3 = document.querySelector("#cantKgHGal")
-    let cant4 = document.querySelector("#cantKgAI")
-    let cant5 = document.querySelector("#cantKgAl")
-    let cant6 = document.querySelector("#cantKgHA")
+    cant1 = document.querySelector("#cantKgHF")
+    cant2 = document.querySelector("#cantKgHG")
+    cant3 = document.querySelector("#cantKgHGal")
+    cant4 = document.querySelector("#cantKgAI")
+    cant5 = document.querySelector("#cantKgAl")
+    cant6 = document.querySelector("#cantKgHA")
     numVenta++
     pagoTot = (cant1.value * precio1) + (cant2.value * precio2) + (cant3.value * precio3) + (cant4.value * precio4) + (cant5.value * precio5) + (cant6.value * precio6)
     pesoTot = parseInt(cant1.value) + parseInt(cant2.value) + parseInt(cant3.value) + parseInt(cant4.value) + parseInt(cant5.value) + parseInt(cant6.value)
 
-    window.open("C:\Users\Tecnica\Desktop\FACTURACION NACHO\PERSONAL\Web Dev\CODERHOUSE\Proyecto Bezzan\checkout.html","target_blank","width=50%, height=50%, top=25%, left=25%") // VER TEMPA WINDOW OPEN
-    
-
-    newH3.innerHTML = `
-    <center>
-    Ticket ${numVenta}<br><br>
-    Peso Total ${pesoTot} kg<br><br>
-    Total a abonar $${pagoTot}
-    </center>
+    newH5.innerHTML = `
+    Cantidad de items: <br><br>
+    Peso Total: ${pesoTot} kg<br><br>
+    Total a abonar: $${pagoTot}<br><br>
+    Cantidad de pagos:
+    <p>
+    <form>
+    <span class="radioSpan">1<input type="radio" name="cuotas" class="radioInput" value="1" checked></span>
+    <span class="radioSpan">3<input type="radio" name="cuotas" class="radioInput" value="3"></span>
+    <span class="radioSpan">6<input type="radio" name="cuotas" class="radioInput" value="6"></span>
+    <span class="radioSpan">9<input type="radio" name="cuotas" class="radioInput" value="9"></span>
+    <span class="radioSpan">12<input type="radio" name="cuotas" class="radioInput" value="12"></span>
+    </form>
+    <br>
+    (5% mensual acumulativo)
+    </p>
     `
-
-
+    document.querySelector("#pie").style.display = "block"
+    cant1.setAttribute("disabled", "")
+    cant2.setAttribute("disabled", "")
+    cant3.setAttribute("disabled", "")
+    cant4.setAttribute("disabled", "")
+    cant5.setAttribute("disabled", "")
+    cant6.setAttribute("disabled", "")
 }
 
 function verVenta() {
@@ -86,11 +106,72 @@ boton1.addEventListener("click", checkcant)
 let boton2 = document.querySelector(".buscarVenta")
 boton2.addEventListener("click", verVenta)
 
-let newDiv = document.createElement("div")
-document.body.appendChild(newDiv)
-let newH3 = document.createElement("h5")
-newDiv.appendChild(newH3)
-newH3.textContent = ""
+let subtotal = document.querySelector("#subtotal")
+let newH5 = document.createElement("h5")
+subtotal.appendChild(newH5)
+newH5.textContent = ""
 
+let boton3 = document.querySelector("#confirmar")
+let boton4 = document.querySelector("#cancelar")
+boton3.addEventListener("click", confirmar)
+boton4.addEventListener("click", cancelar)
+
+function cancelar() {
+    newH5.innerHTML = ""
+    document.querySelector("#pie").style.display = "none"
+    cant1.removeAttribute("disabled", "")
+    cant2.removeAttribute("disabled", "")
+    cant3.removeAttribute("disabled", "")
+    cant4.removeAttribute("disabled", "")
+    cant5.removeAttribute("disabled", "")
+    cant6.removeAttribute("disabled", "")
+}
+function confirmar() {
+  
+    let vendido = new Venta()
+    vendido.pago = pagoTotal
+    vendido.numVenta = numVenta
+    vendido.fecha = day
+    vendido.pago = Math.floor(pagoTotal)
+    vendido.pesoTot = pesoTot
+    vendido.cantCuotas = cuotas
+    ventas.push(vendido)
+    alert("Gracias por su compra")
+    reiniciar()
+}
+function reiniciar() {
+    cant1.value = 0
+    cant2.value = 0
+    cant3.value = 0
+    cant4.value = 0
+    cant5.value = 0
+    cant6.value = 0
+    newH5.innerHTML = ""
+    document.querySelector("#pie").style.display = "none"
+    cant1.removeAttribute("disabled", "")
+    cant2.removeAttribute("disabled", "")
+    cant3.removeAttribute("disabled", "")
+    cant4.removeAttribute("disabled", "")
+    cant5.removeAttribute("disabled", "")
+    cant6.removeAttribute("disabled", "")
+}
+let radioInputs = document.querySelectorAll(".radioInput")
+for (let i = 0; i < radioInputs.length; i++) {
+    radioInputs[i].addEventListener("change",modValue) 
+}
+function modValue() { // NO ANDA EL ADDEVENTLISTENER EN EL RADIO INPUTTTTTTTTTTT
+    let pagoTotal = pagoTot
+    let elem = document.querySelectorAll(".radioInput")
+    for (i = 0; i < elem.length; i++) {
+        if (elem[i].checked)
+            cuotas = elem[i].value
+    }
+    if (cuotas != 1) {
+        for (let i = 2; i <= cuotas; i++) {
+            pagoTotal *= 1.05
+        }
+    }
+    comprar()
+}
 
 
